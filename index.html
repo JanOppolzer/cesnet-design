@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CESNET Design</title>
+    <link rel="stylesheet" href="/src/css/tailwind.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Oswald&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.1/dist/alpine.min.js" defer></script>
+</head>
+<body class="bg-gray-50 dark:bg-warmGray-800 text-gray-900 dark:text-warmGray-50">
+
+    <noscript>
+        <div class="m-4 p-4 sm:px-8 bg-red-700 dark:bg-red-900 text-red-50 font-bold rounded shadow">
+            <div class="flex items-center space-x-4">
+                <div class="p-2 bg-red-900 dark:bg-red-700 rounded">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path>
+                    </svg>
+                </div>
+                <p>
+                    <span class="sm:hidden">Vyžadován JavaScript.</span>
+                    <span class="hidden sm:inline">Tato stránka vyžaduje webový prohlížeč s podporou JavaScriptu.</span>
+                </p>
+            </div>
+        </div>
+    </noscript>
+
+    <header x-data="{ linker: false }" class="px-4 bg-cesnetDark text-gray-200 border-b border-cesnetGray text-sm">
+
+        <div class="max-w-7xl mx-auto h-10 flex flex-row items-center justify-between _overflow-y-hidden">
+
+            <div class="flex items-center space-x-4">
+
+                <a href="https://www.cesnet.cz">
+                    <div class="italic whitespace-nowrap">e-infrastruktura</div>
+                    <div class="-mt-1 font-semibold text-right">CESNET</div>
+                </a>
+
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"></path>
+                </svg>
+
+            </div>
+
+            <div class="hidden xm:block">
+
+                <span x-data="{ network: false }" class="inline-block relative cursor-pointer">
+                    <span @click="network = !network" @click.away="network = false" @mouseenter="network = true" @mouseleave="network = false" class="px-3 py-3 border-gray-500 border-l">
+                        Síť
+                        <ul x-cloak x-show.transition.opacity.duration.500ms="network" class="bg-cesnetDark absolute top-7 w-64">
+                            <li class="px-4 py-4 border-b border-l-4 border-cesnetGray font-bold text-gray-500 cursor-default">Služby</li>
+                            <li class="border-b text-gray-200">
+                                <a class="p-4 block" href="https://www.cesnet.cz/sluzby/pripojeni/">
+                                    <div>IP</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Připojení internetovým protokolem</div>
+                                </a>
+                            </li>
+                            <li class="border-b text-gray-200">
+                                <a class="p-4 block" href="https://www.cesnet.cz/sluzby/nic/">
+                                    <div>NIC</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Přidělování adresových zdrojů</div>
+                                </a>
+                            </li>
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://www.cesnet.cz/sluzby/circuit/">
+                                    <div>Circuit</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Vyhrazené okruhy a sítě</div>
+                                </a>
+                            </li>
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://www.cesnet.cz/sluzby/lambda/">
+                                    <div>Lambda</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Optický přenos přes transparentní kanály mezi koncovými body</div>
+                                </a>
+                            </li>
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://www.cesnet.cz/sluzby/photonic/">
+                                    <div>Photonic</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Optický přenos bez konverze na elektrický signál</div>
+                                </a>
+                            </li>
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://www.eduroam.cz/">
+                                    <div>eduroam</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Roaming uživatelů, připojení k síti v navštívené organizaci</div>
+                                </a>
+                            </li>
+                            <li class="px-4 py-4 border-b border-l-4 border-cesnetGray font-bold text-gray-500">Technologie</li>
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://czechlight.cesnet.cz/">
+                                    <div>CzechLight</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Optické vláknové zesilovače</div>
+                                </a>
+                            </li>
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://www.liberouter.org/">
+                                    <div>Liberouter</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Hardwarově akcelerované monitorování síťového provozu</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </span>
+                </span>
+
+                <span x-data="{ computing: false }" class="inline-block relative cursor-pointer">
+                    <span @click="computing = !computing" @click.away="computing = false" @mouseenter="computing = true" @mouseleave="computing = false" class="px-3 py-3 border-gray-500 border-l">
+                        Výpočty
+                        <ul x-cloak x-show.transition.opacity.duration.500ms="computing" class="bg-cesnetDark absolute top-7 w-64">
+                            <li class="px-4 py-4 border-b border-l-4 border-cesnetGray font-bold text-gray-500 cursor-default">Služby</li>
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://www.cesnet.cz/sluzby/metacentrum/">
+                                    <div>Náročné výpočty</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Česká Národní Gridová Infrastruktura (NGI)</div>
+                                </a>
+                            </li>
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://virtualizace.cesnet.cz/">
+                                    <div>Virtuální servery</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Služby virtualizační platformy</div>
+                                </a>
+                            </li>
+                            <li class="px-4 py-4 border-b border-l-4 border-cesnetGray font-bold text-gray-500 cursor-default">Technologie</li>
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://www.cesnet.cz/e-infrastruktura/gridy/">
+                                    <div>Infrastruktura</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Gridová infrastruktura</div>
+                                </a>
+                            </li>
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://www.metacentrum.cz/">
+                                    <div>Metacentrum</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Metacentrum</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </span>
+                </span>
+
+                <span x-data="{ storage: false }" class="inline-block relative cursor-pointer">
+                    <span @click="storage = !storage" @click.away="storage = false" @mouseenter="storage = true" @mouseleave="storage = false" class="px-3 py-3 border-gray-500 border-l">
+                        Úložiště
+                        <ul x-cloak x-show.transition.opacity.duration.500ms="storage" class="bg-cesnetDark absolute top-7 w-64">
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://du.cesnet.cz/cs/navody/start">
+                                    <div>Postupy a návody</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Návody pro uživatele</div>
+                                </a>
+                            </li>
+                            <li class="px-4 py-4 border-b border-l-4 border-cesnetGray font-bold text-gray-500 cursor-default">Služby</li>
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://du.cesnet.cz/cs/vlastni_vo/start">
+                                    <div>Zálohování a archivace dat</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Ukládání, zálohování, archivace</div>
+                                </a>
+                            </li>
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://filesender.cesnet.cz/">
+                                    <div>FileSender</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Zasílání velkých souborů</div>
+                                </a>
+                            </li>
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://owncloud.cesnet.cz/">
+                                    <div>ownCloud</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Uložení a synchronizace dat</div>
+                                </a>
+                            </li>
+                            <li class="px-4 py-4 border-b border-l-4 border-cesnetGray font-bold text-gray-500 cursor-default">Technologie</li>
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://du.cesnet.cz/cs/infrastruktura_ulozist/start">
+                                    <div>Infrastruktura</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Infrastruktura datových úložišť</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </span>
+                </span>
+
+                <span x-data="{ cooperation: false }" class="inline-block relative cursor-pointer">
+                    <span @click="cooperation = !cooperation" @click.away="cooperation = false" @mouseenter="cooperation = true" @mouseleave="cooperation = false" class="px-3 py-3 border-gray-500 border-l">
+                        Spolupráce
+                        <ul x-cloak x-show.transition.opacity.duration.500ms="cooperation" class="bg-cesnetDark absolute top-7 w-64">
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://meetings.cesnet.cz/">
+                                    <div>Rezervační systém</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Rezervační systém</div>
+                                </a>
+                            </li>
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://vidcon.cesnet.cz/">
+                                    <div>Postupy a návody</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Návody pro uživatele</div>
+                                </a>
+                            </li>
+                            <li class="px-4 py-4 border-b border-l-4 border-cesnetGray font-bold text-gray-500 cursor-default">Služby</li>
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://www.cesnet.cz/sluzby/videokonference/">
+                                    <div>Videokonference</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Komunikace vzdálených uživatelů</div>
+                                </a>
+                            </li>
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://www.cesnet.cz/sluzby/webkonference/">
+                                    <div>Webkonference</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Komunikace vzdálených uživatelů pomocí webového prohlížeče</div>
+                                </a>
+                            </li>
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://www.cesnet.cz/sluzby/ip-telefonie/">
+                                    <div>IP telefonie</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Telefonní hovory po síti</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </span>
+                </span>
+
+                <span x-data="{ multimedia: false }" class="inline-block relative cursor-pointer">
+                    <span @click="multimedia = !multimedia" @click.away="multimedia = false" @mouseenter="multimedia = true" @mouseleave="multimedia = false" class="px-3 py-3 border-gray-500 border-l">
+                        Multimédia
+                        <ul x-cloak x-show.transition.opacity.duration.500ms="multimedia" class="bg-cesnetDark absolute top-7 w-64">
+                            <li class="px-4 py-4 border-b border-l-4 border-cesnetGray font-bold text-gray-500 cursor-default">Služby</li>
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://www.cesnet.cz/sluzby/streaming/">
+                                    <div>Streaming</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Internetové vysílání akcí a přednášek</div>
+                                </a>
+                            </li>
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://www.cesnet.cz/sluzby/specialni-obrazove-prenosy/">
+                                    <div>Speciální obrazové přenosy</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Multimediální přenosy</div>
+                                </a>
+                            </li>
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://www.cesnet.cz/sluzby/videoarchiv/">
+                                    <div>Videoarchiv</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Archiv multimediálních materiálů</div>
+                                </a>
+                            </li>
+                            <li class="px-4 py-4 border-b border-l-4 border-cesnetGray font-bold text-gray-500 cursor-default">Technologie</li>
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://www.ultragrid.cz/">
+                                    <div>UltraGrid</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Software pro videopřenosy</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </span>
+                </span>
+
+                <span x-data="{ security: false }" class="inline-block relative cursor-pointer">
+                    <span @click="security = !security" @click.away="security = false" @mouseenter="security = true" @mouseleave="security = false" class="px-3 py-3 border-gray-500 border-l">
+                        Bezpečnost
+                        <ul x-cloak x-show.transition.opacity.duration.500ms="security" class="bg-cesnetDark absolute top-7 w-64">
+                            <li class="px-4 py-4 border-b border-l-4 border-cesnetGray font-bold text-gray-500 cursor-default">Služby</li>
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://csirt.cesnet.cz/">
+                                    <div>CSIRT</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Řešení bezpečnostních incidentů</div>
+                                </a>
+                            </li>
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://flab.cesnet.cz/">
+                                    <div>FLAB</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Forenzní laboratoř</div>
+                                </a>
+                            </li>
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://www.cesnet.cz/sluzby/antispam-gateway/">
+                                    <div>Antispam</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Antispam mail gateway</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </span>
+                </span>
+
+                <span x-data="{ aai: false }" class="inline-block relative cursor-pointer">
+                    <span @click="aai = !aai" @click.away="aai = false" @mouseenter="aai = true" @mouseleave="aai = false" class="px-3 py-3 border-gray-500 border-l border-r">
+                        Identita
+                        <ul x-cloak x-show.transition.opacity.duration.500ms="aai" class="bg-cesnetDark absolute top-7 w-64">
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://einfra.cesnet.cz/a/user-profile/fed/">
+                                    <div>Uživatelský profil</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Správa profilu uživatele e-infrastruktury</div>
+                                </a>
+                            </li>
+                            <li class="px-4 py-4 border-b border-l-4 border-cesnetGray font-bold text-gray-500 cursor-default">Služby</li>
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://www.eduroam.cz/">
+                                    <div>eduroam</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Infrastruktura pro roaming uživatelů mezi organizacemi</div>
+                                </a>
+                            </li>
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://www.eduid.cz/">
+                                    <div>eduID.cz</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Federace identit pro snadný přístup ke službám</div>
+                                </a>
+                            </li>
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://pki.cesnet.cz/">
+                                    <div>PKI</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Certifikáty pro uživatele a servery</div>
+                                </a>
+                            </li>
+                            <li class="px-4 py-4 border-b border-l-4 border-cesnetGray font-bold text-gray-500 cursor-default">Technologie</li>
+                            <li class="border-b text-gray-200">
+                                <a class="px-4 py-4 block" href="https://perun.cesnet.cz/">
+                                    <div>Perun</div>
+                                    <div class="pl-4 text-gray-400 text-xs">Systém pro správu uživatelů a přístupu ke službám</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </span>
+                </span>
+
+            </div>
+
+            <div class="flex items-center">
+
+                <div class="mr-1">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+
+                <div>Přihlášení</div>
+
+                <div>
+
+                    <button @click.prevent="linker = !linker">
+
+                        <svg x-show="!linker" class="inline-block xm:hidden w-6 h-6 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+
+                        <svg x-cloak x-show="linker" class="inline-block xm:hidden w-6 h-6 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            
+        </div>
+
+        <div x-cloak x-show.transition.duration.500ms="linker" class="xm:hidden max-w-7xl mx-auto flex flex-col">
+
+            <div>
+
+                <div x-data="{ network: false }" class="px-3 py-2 cursor-pointer">
+                    <div @click="network = !network" @click.away="network = false" class="flex justify-between">
+                        <div>Síť</div>
+                        <svg x-show="!network" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                        <svg x-show="network" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </div>
+                    <ul x-show.transition.duration.500ms="network">
+                        <li class="px-2 py-2">
+                            <div class="italic cursor-default">Služby</div>
+                            <ul>
+                                <li>
+                                    <a class="px-2 py-2 block" href="https://www.cesnet.cz/sluzby/pripojeni/">
+                                        <div>IP</div>
+                                        <div class="pl-4 text-gray-400 text-xs">Připojení internetovým protokolem</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="px-2 py-2 block" href="https://www.cesnet.cz/sluzby/nic/">
+                                        <div>NIC</div>
+                                        <div class="pl-4 text-gray-400 text-xs">Přidělování adresových zdrojů</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="px-2 py-2 block" href="https://www.cesnet.cz/sluzby/circuit/">
+                                        <div>Circuit</div>
+                                        <div class="pl-4 text-gray-400 text-xs">Vyhrazené okruhy a sítě</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="px-2 py-2 block" href="https://www.cesnet.cz/sluzby/lambda/">
+                                        <div>Lambda</div>
+                                        <div class="pl-4 text-gray-400 text-xs">Optický přenos přes transparentní kanály mezi koncovými body</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="px-2 py-2 block" href="https://www.cesnet.cz/sluzby/photonic/">
+                                        <div>Photonic</div>
+                                        <div class="pl-4 text-gray-400 text-xs">Optický přenos bez konverze na elektrický signál</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="px-2 py-2 block" href="https://www.eduroam.cz/">
+                                        <div>eduroam</div>
+                                        <div class="pl-4 text-gray-400 text-xs">Roaming uživatelů, připojení k síti v navštívené organizaci</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="px-2 py-2">
+                            <div class="italic cursor-default">Technologie</div>
+                            <ul>
+                                <li>
+                                    <a class="px-2 py-2 block" href="https://czechlight.cesnet.cz/">
+                                        <div>CzechLight</div>
+                                        <div class="pl-4 text-gray-400 text-xs">Optické vláknové zesilovače</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="px-2 py-2 block" href="https://www.liberouter.org/">
+                                        <div>Liberouter</div>
+                                        <div class="pl-4 text-gray-400 text-xs">Hardwarově akcelerované monitorování síťového provozu</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div x-data="{ computing: false }" class="px-3 py-2 cursor-pointer">
+                    <div @click="computing = !computing" @click.away="computing = false" class="flex justify-between">
+                        <div>Výpočty</div>
+                        <svg x-show="!computing" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                        <svg x-show="computing" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </div>
+                    <ul x-show.transition.duration.500ms="computing">
+                        <li class="px-2 py-2">
+                            <div class="italic cursor-default">Služby</div>
+                            <ul>
+                                <li>
+                                    <a class="px-2 py-2 block" href="#">
+                                        <div>Náročné výpočty</div>
+                                        <div class="pl-4 text-gray-400 text-xs">Česká Národní Gridová Infrastruktura (NGI)</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="px-2 py-2 block" href="#">
+                                        <div>Virtuální servery</div>
+                                        <div class="pl-4 text-gray-400 text-xs">Služby virtualizační platformy</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="px-2 py-2">
+                            <div class="italic cursor-default">Technologie</div>
+                            <ul>
+                                <li>
+                                    <a class="px-2 py-2 block" href="#">
+                                        <div>Infrastruktura</div>
+                                        <div class="pl-4 text-gray-400 text-xs">Gridová infrastruktura</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="px-2 py-2 block" href="#">
+                                        <div>Metacentrum</div>
+                                        <div class="pl-4 text-gray-400 text-xs">Metacentrum</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div x-data="{ storage: false }" class="px-3 py-2 cursor-pointer">
+                    <div @click="storage = !storage" @click.away="storage = false" class="flex justify-between">
+                        <div>Úložiště</div>
+                        <svg x-show="!storage" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                        <svg x-show="storage" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </div>
+                    <ul x-show.transition.duration.500ms="storage">
+                        <li>
+                            <a class="px-2 py-2 block" href="https://du.cesnet.cz/cs/navody/start">
+                                <div>Postupy a návody</div>
+                                <div class="pl-4 text-gray-400 text-xs">Návody pro uživatele</div>
+                            </a>
+                        </li>
+                        <li class="px-2 py-2">
+                            <div class="italic cursor-default">Služby</div>
+                            <ul>
+                                <li>
+                                    <a class="px-2 py-2 block" href="https://du.cesnet.cz/cs/vlastni_vo/start">
+                                        <div>Zálohování a archivace dat</div>
+                                        <div class="pl-4 text-gray-400 text-xs">Ukládání, zálohování, archivace</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="px-2 py-2 block" href="https://filesender.cesnet.cz/">
+                                        <div>FileSender</div>
+                                        <div class="pl-4 text-gray-400 text-xs">Zasílání velkých souborů</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="px-2 py-2 block" href="https://owncloud.cesnet.cz/">
+                                        <div>ownCloud</div>
+                                        <div class="pl-4 text-gray-400 text-xs">Uložení a synchronizace dat</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="px-2 py-2">
+                            <div class="italic cursor-default">Technologie</div>
+                            <ul>
+                                <li>
+                                    <a class="px-2 py-2 block" href="https://du.cesnet.cz/cs/infrastruktura_ulozist/start">
+                                        <div>Infrastruktura</div>
+                                        <div class="pl-4 text-gray-400 text-xs">Infrastruktura datových úložišť</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div x-data="{ cooperation: false }" class="px-3 py-2 cursor-pointer">
+                    <div @click="cooperation = !cooperation" @click.away="cooperation = false" class="flex justify-between">
+                        <div>Spolupráce</div>
+                        <svg x-show="!cooperation" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                        <svg x-show="cooperation" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </div>
+                    <ul x-show.transition.duration.500ms="cooperation">
+                        <li>
+                            <a class="px-2 py-2 block" href="https://meetings.cesnet.cz/">
+                                <div>Rezervační systém</div>
+                                <div class="pl-4 text-gray-400 text-xs">Rezervační systém</div>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="px-2 py-2 block" href="#">
+                                <div>Postupy a návody</div>
+                                <div class="pl-4 text-gray-400 text-xs">Návody pro uživatele</div>
+                            </a>
+                        </li>
+                        <li class="px-2 py-2">
+                            <div class="italic cursor-default">Služby</div>
+                            <ul>
+                                <li>
+                                    <a class="px-2 py-2 block" href="https://www.cesnet.cz/sluzby/videokonference/">
+                                        <div>Videokonference</div>
+                                        <div class="pl-4 text-gray-400 text-xs">Komunikace vzdálených uživatelů</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="px-2 py-2 block" href="https://www.cesnet.cz/sluzby/webkonference/">
+                                        <div>Webkonference</div>
+                                        <div class="pl-4 text-gray-400 text-xs">Komunikace vzdálených uživatelů pomocí webového prohlížeče</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="px-2 py-2 block" href="https://www.cesnet.cz/sluzby/ip-telefonie/">
+                                        <div>IP telefonie</div>
+                                        <div class="pl-4 text-gray-400 text-xs">Telefonní hovory po síti</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div x-data="{ multimedia: false }" class="px-3 py-2 cursor-pointer">
+                    <div @click="multimedia = !multimedia" @click.away="multimedia = false" class="flex justify-between">
+                        <div>Multimédia</div>
+                        <svg x-show="!multimedia" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                        <svg x-show="multimedia" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </div>
+                    <ul x-show.transition.duration.500ms="multimedia">
+                        <li class="px-2 py-2">
+                            <div class="italic cursor-default">Služby</div>
+                            <ul>
+                                <li>
+                                    <a class="px-2 py-2 block" href="https://www.cesnet.cz/sluzby/streaming/">
+                                        <div>Streaming</div>
+                                        <div class="pl-4 text-gray-400 text-xs">Internetové vysílání akcí a přednášek</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="px-2 py-2 block" href="https://www.cesnet.cz/sluzby/specialni-obrazove-prenosy/">
+                                        <div>Speciální obrazové přenosy</div>
+                                        <div class="pl-4 text-gray-400 text-xs">Multimediální přenosy</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="px-2 py-2 block" href="https://www.cesnet.cz/sluzby/videoarchiv/">
+                                        <div>Videoarchiv</div>
+                                        <div class="pl-4 text-gray-400 text-xs">Archiv multimediálních materiálů</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="px-2 py-2">
+                            <div class="italic cursor-default">Technologie</div>
+                            <ul>
+                                <li>
+                                    <a class="px-2 py-2 block" href="https://www.ultragrid.cz/">
+                                        <div>UltraGrid</div>
+                                        <div class="pl-4 text-gray-400 text-xs">Software pro videopřenosy</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div x-data="{ security: false }" class="px-3 py-2 cursor-pointer">
+                    <div @click="security = !security" @click.away="security = false" class="flex justify-between">
+                        <div>Bezpečnost</div>
+                        <svg x-show="!security" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                        <svg x-show="security" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </div>
+                    <ul x-show.transition.duration.500ms="security">
+                        <li class="px-2 py-2">
+                            <div class="italic cursor-default">Služby</div>
+                            <ul>
+                                <li>
+                                    <a class="px-2 py-2 block" href="https://csirt.cesnet.cz/">
+                                        <div>CSIRT</div>
+                                        <div class="pl-4 text-gray-400 text-xs">Řešení bezpečnostních incidentů</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="px-2 py-2 block" href="https://flab.cesnet.cz/">
+                                        <div>FLAB</div>
+                                        <div class="pl-4 text-gray-400 text-xs">Forenzní laboratoř</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="px-2 py-2 block" href="https://www.cesnet.cz/sluzby/antispam-gateway/">
+                                        <div>Antispam</div>
+                                        <div class="pl-4 text-gray-400 text-xs">Antispam mail gateway</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div x-data="{ aai: false }" class="px-3 py-2 cursor-pointer">
+                    <div @click="aai = !aai" @click.away="aai = false" class="flex justify-between">
+                        <div>Identita</div>
+                        <svg x-show="!aai" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                        <svg x-show="aai" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </div>
+                    <ul x-show.transition.duration.500ms="aai">
+                        <li>
+                            <a class="px-2 py-2 block" href="https://einfra.cesnet.cz/a/user-profile/fed/">
+                                <div>Uživatelský profil</div>
+                                <div class="pl-4 text-gray-400 text-xs">Správa profilu uživatele e-infrastruktury</div>
+                            </a>
+                        </li>
+                        <li class="px-2 py-2">
+                            <div class="italic cursor-default">Služby</div>
+                            <ul>
+                                <li>
+                                    <a class="px-2 py-2 block" href="https://www.eduroam.cz/">
+                                        <div>eduroam</div>
+                                        <div class="pl-4 text-gray-400 text-xs">Infrastruktura pro roaming uživatelů mezi organizacemi</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="px-2 py-2 block" href="https://www.eduid.cz/">
+                                        <div>eduID.cz</div>
+                                        <div class="pl-4 text-gray-400 text-xs">Federace identit pro snadný přístup ke službám</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="px-2 py-2 block" href="https://pki.cesnet.cz/">
+                                        <div>PKI</div>
+                                        <div class="pl-4 text-gray-400 text-xs">Certifikáty pro uživatele a servery</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="px-2 py-2">
+                            <div class="italic cursor-default">Technologie</div>
+                            <ul>
+                                <li>
+                                    <a class="px-2 py-2 block" href="https://perun.cesnet.cz/">
+                                        <div>Perun</div>
+                                        <div class="pl-4 text-gray-400 text-xs">Systém pro správu uživatelů a přístupu ke službám</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+            </div>
+
+        </div>
+
+    </header>
+    <div class="h-3 bg-cesnetRed"></div>
+
+    <main class="px-4 py-2 md:px-14 max-w-7xl mx-auto text-gray-900 dark:text-gray-400">
+
+        <aside class="md:w-60 md:mr-10 md:mb-8 md:float-left">
+
+            <div id="logo" class="h-40"></div>
+
+            <div x-data="{ menu: false }">
+
+                <div @click="menu = !menu" class="p-4 flex justify-between md:hidden bg-gray-200 dark:bg-warmGray-600 cursor-pointer">
+
+                    <span>Menu</span>
+
+                    <svg x-show="!menu" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+
+                    <svg x-cloak x-show="menu" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                    </svg>
+
+                </div>
+
+                <div :class="{ 'hidden': !menu }" class="hidden md:block">
+    
+                    <div class="py-4">
+                        <input class="px-4 py-2 w-full bg-gray-100 dark:bg-warmGray-700" type="text" name="q" accesskey="f" placeholder="Hledat">
+                    </div>
+    
+                    <nav class="text-base">
+                        <ul class="border-gray-300 border-2">
+                            <li class="border-gray-300 border-b bg-gradient-to-b from-red-500 dark:from-red-700 to-red-700 dark:to-red-900 hover:from-red-600 hover:to-red-800 text-red-50 dark:text-warmGray-50 uppercase">
+                                <a class="flex items-center space-x-2 py-1 pl-3 leading-10" href="#">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                    <div>O federaci</div>
+                                </a>
+                            </li>
+                            <li>
+                                <ul>
+                                    <li class="border-gray-300 border-b bg-gray-200 dark:bg-warmGray-700 bg-gradient-to-b hover:from-red-50 dark:hover:from-warmGray-700 hover:to-red-100 dark:hover:to-warmGray-800">
+                                        <a class="block py-1 pl-10 leading-10" href="#">
+                                            Co je federace identit?
+                                        </a>
+                                    </li>
+                                    <li class="border-gray-300 border-b bg-gray-200 dark:bg-warmGray-700 bg-gradient-to-b hover:from-red-50 dark:hover:from-warmGray-700 hover:to-red-100 dark:hover:to-warmGray-800">
+                                        <a class="block py-1 pl-10 leading-10" href="#">
+                                            Novinky
+                                        </a>
+                                    </li>
+                                    <li class="border-gray-300 border-b bg-gray-200 dark:bg-warmGray-700 bg-gradient-to-b hover:from-red-50 dark:hover:from-warmGray-700 hover:to-red-100 dark:hover:to-warmGray-800">
+                                        <a class="block py-1 pl-10 leading-10" href="#">
+                                            Členové
+                                        </a>
+                                    </li>
+                                    <li class="border-gray-300 border-b bg-gray-200 dark:bg-warmGray-700 bg-gradient-to-b hover:from-red-50 dark:hover:from-warmGray-700 hover:to-red-100 dark:hover:to-warmGray-800">
+                                        <a class="block py-1 pl-10 leading-10" href="#">
+                                            Jak se připojit
+                                        </a>
+                                    </li>
+                                    <li class="border-gray-300 border-b bg-gray-200 dark:bg-warmGray-700 bg-gradient-to-b hover:from-red-50 dark:hover:from-warmGray-700 hover:to-red-100 dark:hover:to-warmGray-800">
+                                        <a class="block py-1 pl-10 leading-10" href="#">
+                                            Pro uživatele
+                                        </a>
+                                    </li>
+                                    <li class="border-gray-300 border-b bg-gray-200 dark:bg-warmGray-700 bg-gradient-to-b hover:from-red-50 dark:hover:from-warmGray-700 hover:to-red-100 dark:hover:to-warmGray-800">
+                                        <a class="block py-1 pl-10 leading-10" href="#">
+                                            Politika
+                                        </a>
+                                    </li>
+                                    <li class="border-gray-300 border-b bg-gray-200 dark:bg-warmGray-700 bg-gradient-to-b hover:from-red-50 dark:hover:from-warmGray-700 hover:to-red-100 dark:hover:to-warmGray-800">
+                                        <a class="block py-1 pl-10 leading-10" href="#">
+                                            MRPS
+                                        </a>
+                                    </li>
+                                    <li class="border-gray-300 border-b bg-gray-200 dark:bg-warmGray-700 bg-gradient-to-b hover:from-red-50 dark:hover:from-warmGray-700 hover:to-red-100 dark:hover:to-warmGray-800">
+                                        <a class="block py-1 pl-10 leading-10" href="#">
+                                            Ochrana osobních údajů
+                                        </a>
+                                    </li>
+                                    <li class="border-gray-300 border-b bg-gray-200 dark:bg-warmGray-700 bg-gradient-to-b hover:from-red-50 dark:hover:from-warmGray-700 hover:to-red-100 dark:hover:to-warmGray-800">
+                                        <a class="block py-1 pl-10 leading-10" href="#">
+                                            Kontakt
+                                        </a>
+                                    </li>
+                                    <li class="border-gray-300 border-b bg-gray-200 dark:bg-warmGray-700 bg-gradient-to-b hover:from-red-50 dark:hover:from-warmGray-700 hover:to-red-100 dark:hover:to-warmGray-800">
+                                        <a class="block py-1 pl-10 leading-10" href="#">
+                                            Ke stažení
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="border-gray-300 border-b bg-gradient-to-b from-red-500 dark:from-red-700 to-red-700 dark:to-red-900 hover:from-red-600 hover:to-red-800 text-red-50 uppercase">
+                                <a class="flex items-center space-x-2 py-1 pl-3 leading-10" href="#">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                    <div>Technická sekce</div>
+                                </a>
+                            </li>
+                            <li class="border-gray-300 border-b bg-gradient-to-b from-red-500 dark:from-red-700 to-red-700 dark:to-red-900 hover:from-red-600 hover:to-red-800 text-red-50 uppercase">
+                                <a class="flex items-center space-x-2 py-1 pl-3 leading-10" href="#">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                    <div>Interní sekce</div>
+                                </a>
+                            </li>
+                            <li class="bg-gradient-to-b from-red-500 dark:from-red-700 to-red-700 dark:to-red-900 hover:from-red-600 hover:to-red-800 text-red-50 uppercase">
+                                <a class="flex items-center space-x-2 py-1 pl-3 leading-10" href="#">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                    <div>Archiv</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+    
+                </div>
+
+            </div>
+                
+        </aside>
+
+        <div class="pt-10">
+            <h1 class="font-cesnet text-3xl text-red-500 mb-4">Česká akademická federace identit eduID.cz</h1>
+            <p class="mb-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut gravida condimentum arcu, sit amet placerat tortor ultrices quis. Ut magna sem, semper sit amet gravida eleifend, vehicula hendrerit metus. Nulla et molestie ex. Morbi condimentum lacus leo. Maecenas facilisis justo lorem, ut volutpat diam bibendum nec. Maecenas pretium tellus sed felis convallis tincidunt. Suspendisse gravida diam eget dolor suscipit aliquet. Donec ac tempor turpis. Nam eget nulla id tortor interdum aliquet ac a nisi. Vestibulum viverra sodales ipsum, non vestibulum diam sodales et.</p>
+            <h2 class="font-cesnet text-2xl text-red-500 mb-4 mt-8">Výhody federace</h2>
+            <p class="mb-3">Praesent eget bibendum tellus, et tempor nisi. Duis sed ex sodales, interdum leo vel, rhoncus massa. Fusce ac nunc aliquam, maximus nibh eget, posuere justo. Vivamus tristique lacus sapien, id bibendum ante egestas a. Pellentesque tristique nibh in ligula vehicula posuere. Morbi finibus tortor quis laoreet tincidunt. Donec nisi libero, iaculis eget molestie vitae, faucibus et purus. Quisque gravida feugiat lacus at sagittis. Integer pellentesque vulputate tortor non consequat. Praesent libero est, sodales in nisi ac, consectetur dignissim quam. Etiam nec viverra leo. In hac habitasse platea dictumst. Aliquam faucibus, lorem et feugiat ullamcorper, sem odio ultrices risus, id efficitur arcu felis ut quam. Maecenas eu enim molestie augue gravida posuere et ut ante. Quisque suscipit, tortor ut euismod bibendum, turpis odio mollis nisl, sit amet tempus leo tortor eget felis. Nullam vel magna mattis, rutrum est quis, mollis felis.</p>
+            <!-- <p class="mb-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent faucibus et lectus at blandit. Donec at finibus tortor. Etiam varius scelerisque malesuada. Nullam posuere mattis tempor. Aliquam scelerisque justo a nunc faucibus cursus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean congue sapien quis fermentum pellentesque.</p> -->
+            <!-- <p class="mb-3">Aenean massa nulla, tristique a metus sed, egestas consequat justo. Integer id bibendum augue, et tincidunt odio. Aliquam lobortis congue libero, ut rhoncus mauris consectetur at. Nam et nunc vel mauris tempus congue vel at dolor. Proin at ex pulvinar, sagittis tellus vitae, posuere turpis. Praesent ut ullamcorper elit, id dignissim lorem. Fusce est ipsum, maximus eu ligula vel, tristique interdum metus. Duis faucibus turpis non cursus pellentesque. Suspendisse metus magna, rhoncus tristique risus at, mollis scelerisque velit. Integer lacus elit, rhoncus blandit odio eu, lacinia accumsan tellus. Ut sed velit sodales, posuere dolor vitae, molestie sem. Pellentesque eu porttitor ante. Morbi dignissim erat dui, aliquet consequat sem dapibus vitae. Nullam maximus dapibus lorem, a efficitur augue viverra ut. Duis vitae arcu justo. Nam mattis sem ut felis varius imperdiet.</p> -->
+            <!-- <p class="mb-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut gravida condimentum arcu, sit amet placerat tortor ultrices quis. Ut magna sem, semper sit amet gravida eleifend, vehicula hendrerit metus. Nulla et molestie ex. Morbi condimentum lacus leo. Maecenas facilisis justo lorem, ut volutpat diam bibendum nec. Maecenas pretium tellus sed felis convallis tincidunt. Suspendisse gravida diam eget dolor suscipit aliquet. Donec ac tempor turpis. Nam eget nulla id tortor interdum aliquet ac a nisi. Vestibulum viverra sodales ipsum, non vestibulum diam sodales et.</p> -->
+            <h2 class="font-cesnet text-2xl text-red-500 mb-4 mt-8">Struktura federace</h2>
+            <p class="mb-3">Aenean massa nulla, tristique a metus sed, egestas consequat justo. Integer id bibendum augue, et tincidunt odio. Aliquam lobortis congue libero, ut rhoncus mauris consectetur at. Nam et nunc vel mauris tempus congue vel at dolor. Proin at ex pulvinar, sagittis tellus vitae, posuere turpis. Praesent ut ullamcorper elit, id dignissim lorem. Fusce est ipsum, maximus eu ligula vel, tristique interdum metus. Duis faucibus turpis non cursus pellentesque. Suspendisse metus magna, rhoncus tristique risus at, mollis scelerisque velit. Integer lacus elit, rhoncus blandit odio eu, lacinia accumsan tellus. Ut sed velit sodales, posuere dolor vitae, molestie sem. Pellentesque eu porttitor ante. Morbi dignissim erat dui, aliquet consequat sem dapibus vitae. Nullam maximus dapibus lorem, a efficitur augue viverra ut. Duis vitae arcu justo. Nam mattis sem ut felis varius imperdiet.</p>
+            <!-- <p class="mb-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut gravida condimentum arcu, sit amet placerat tortor ultrices quis. Ut magna sem, semper sit amet gravida eleifend, vehicula hendrerit metus. Nulla et molestie ex. Morbi condimentum lacus leo. Maecenas facilisis justo lorem, ut volutpat diam bibendum nec. Maecenas pretium tellus sed felis convallis tincidunt. Suspendisse gravida diam eget dolor suscipit aliquet. Donec ac tempor turpis. Nam eget nulla id tortor interdum aliquet ac a nisi. Vestibulum viverra sodales ipsum, non vestibulum diam sodales et.</p> -->
+            <!-- <p class="mb-3">Fusce cursus leo risus, et cursus eros commodo non. Aliquam ultricies nisl id porttitor maximus. Aliquam pharetra consectetur justo, eu gravida eros gravida nec. Donec et vulputate felis, eu tempor sapien. Sed facilisis sem ipsum, quis convallis tellus euismod eu. Donec aliquam nulla in nisi malesuada, at facilisis sem egestas. Vestibulum vitae felis id elit laoreet vestibulum tempor tristique tortor. Aliquam erat volutpat. Nunc viverra augue quis nulla lacinia, vitae semper tellus sagittis. Pellentesque rhoncus sem et magna convallis, nec vulputate mi iaculis. Nunc id accumsan mi. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;</p> -->
+            <!-- <p class="mb-3">Praesent eget bibendum tellus, et tempor nisi. Duis sed ex sodales, interdum leo vel, rhoncus massa. Fusce ac nunc aliquam, maximus nibh eget, posuere justo. Vivamus tristique lacus sapien, id bibendum ante egestas a. Pellentesque tristique nibh in ligula vehicula posuere. Morbi finibus tortor quis laoreet tincidunt. Donec nisi libero, iaculis eget molestie vitae, faucibus et purus. Quisque gravida feugiat lacus at sagittis. Integer pellentesque vulputate tortor non consequat. Praesent libero est, sodales in nisi ac, consectetur dignissim quam. Etiam nec viverra leo. In hac habitasse platea dictumst. Aliquam faucibus, lorem et feugiat ullamcorper, sem odio ultrices risus, id efficitur arcu felis ut quam. Maecenas eu enim molestie augue gravida posuere et ut ante. Quisque suscipit, tortor ut euismod bibendum, turpis odio mollis nisl, sit amet tempus leo tortor eget felis. Nullam vel magna mattis, rutrum est quis, mollis felis.</p> -->
+            <h2 class="font-cesnet text-2xl text-red-500 mb-4 mt-8">Členství</h2>
+            <p class="mb-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent faucibus et lectus at blandit. Donec at finibus tortor. Etiam varius scelerisque malesuada. Nullam posuere mattis tempor. Aliquam scelerisque justo a nunc faucibus cursus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean congue sapien quis fermentum pellentesque.</p>
+            <p class="mb-3">Aenean massa nulla, tristique a metus sed, egestas consequat justo. Integer id bibendum augue, et tincidunt odio. Aliquam lobortis congue libero, ut rhoncus mauris consectetur at. Nam et nunc vel mauris tempus congue vel at dolor. Proin at ex pulvinar, sagittis tellus vitae, posuere turpis. Praesent ut ullamcorper elit, id dignissim lorem. Fusce est ipsum, maximus eu ligula vel, tristique interdum metus. Duis faucibus turpis non cursus pellentesque. Suspendisse metus magna, rhoncus tristique risus at, mollis scelerisque velit. Integer lacus elit, rhoncus blandit odio eu, lacinia accumsan tellus. Ut sed velit sodales, posuere dolor vitae, molestie sem. Pellentesque eu porttitor ante. Morbi dignissim erat dui, aliquet consequat sem dapibus vitae. Nullam maximus dapibus lorem, a efficitur augue viverra ut. Duis vitae arcu justo. Nam mattis sem ut felis varius imperdiet.</p>
+            <!-- <p class="mb-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut gravida condimentum arcu, sit amet placerat tortor ultrices quis. Ut magna sem, semper sit amet gravida eleifend, vehicula hendrerit metus. Nulla et molestie ex. Morbi condimentum lacus leo. Maecenas facilisis justo lorem, ut volutpat diam bibendum nec. Maecenas pretium tellus sed felis convallis tincidunt. Suspendisse gravida diam eget dolor suscipit aliquet. Donec ac tempor turpis. Nam eget nulla id tortor interdum aliquet ac a nisi. Vestibulum viverra sodales ipsum, non vestibulum diam sodales et.</p> -->
+            <!-- <p class="mb-3">Aenean massa nulla, tristique a metus sed, egestas consequat justo. Integer id bibendum augue, et tincidunt odio. Aliquam lobortis congue libero, ut rhoncus mauris consectetur at. Nam et nunc vel mauris tempus congue vel at dolor. Proin at ex pulvinar, sagittis tellus vitae, posuere turpis. Praesent ut ullamcorper elit, id dignissim lorem. Fusce est ipsum, maximus eu ligula vel, tristique interdum metus. Duis faucibus turpis non cursus pellentesque. Suspendisse metus magna, rhoncus tristique risus at, mollis scelerisque velit. Integer lacus elit, rhoncus blandit odio eu, lacinia accumsan tellus. Ut sed velit sodales, posuere dolor vitae, molestie sem. Pellentesque eu porttitor ante. Morbi dignissim erat dui, aliquet consequat sem dapibus vitae. Nullam maximus dapibus lorem, a efficitur augue viverra ut. Duis vitae arcu justo. Nam mattis sem ut felis varius imperdiet.</p> -->
+        </div>
+
+    </main>
+
+    <div class="fixed bottom-1 right-1 sm:bottom-5 sm:right-5 bg-gray-200 rounded-full border-2 text-gray-400 hover:text-gray-500 opacity-50">
+        <a href="#top">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 11l3-3m0 0l3 3m-3-3v8m0-13a9 9 0 110 18 9 9 0 010-18z"></path>
+            </svg>
+        </a>
+    </div>
+
+    <div class="h-3 bg-cesnetGray dark:bg-warmGray-600 clear-both"></div>
+    <footer class="p-8 bg-cesnetDark dark:bg-warmGray-900 text-white dark:text-gray-400 text-sm">
+
+        <div class="max-w-7xl mx-auto">
+
+            <div class="pb-4 md:grid md:grid-cols-4 lg:grid-cols-5 gap-0 space-y-6 md:space-y-0">
+                
+                <div class="lg:col-span-2">
+                    <img src="img/logo-cesnet.svg" alt="CESNET logo">
+                </div>
+
+                <div class="p-2">
+                    <h4 class="pb-2 mb-4 font-bold uppercase border-b">Rychlé odkazy</h4>
+                    
+                    <ul class="list-square list-inside leading-loose">
+                        <li><a class="hover:underline" href="#">CESNET PKI</a></li>
+                        <li><a class="hover:underline" href="#">eduID.cz</a></li>
+                        <li><a class="hover:underline" href="#">eduroam</a></li>
+                        <li><a class="hover:underline" href="#">MetaCentrum</a></li>
+                        <li><a class="hover:underline" href="#">Perun</a></li>
+                    </ul>
+                </div>
+                
+                <div class="p-2">
+                    <h4 class="pb-2 mb-4 font-bold uppercase border-b">Kontakt</h4>
+                    
+                    <address class="not-italic leading-loose">
+                        CESNET, z. s. p. o.<br>
+                        Zikova 4, 16000 Praha 6<br>
+                        <a class="underline hover:no-underline" href="mailto:info@cesnet.cz">info@cesnet.cz</a>
+                    </address>
+                </div>
+                
+                <div class="p-2">
+                    <h4 class="pb-2 mb-4 font-bold uppercase border-b">Service desk</h4>
+                    
+                    <ul class="leading-loose">
+                        <li>Tel: <a class="hover:underline" href="tel:+420234680222">+420 234 680 222</a></li>
+                        <li>GSM: <a class="hover:underline" href="tel:+420602252531">+420 602 252 531</a></li>
+                        <li><a class="underline hover:no-underline" href="mailto:support@cesnet.cz">support@cesnet.cz</a></li>
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <div class="text-xs text-right h-10">
+                &copy; 1996&ndash;2021 <a class="underline hover:no-underline" href="https://www.cesnet.cz">CESNET, z. s. p. o.</a>
+            </div>
+
+        </div>
+            
+    </footer>
+
+</body>
+</html>

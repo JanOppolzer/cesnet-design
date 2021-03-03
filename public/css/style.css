@@ -1,0 +1,17 @@
+[x-cloak] {
+    display: none !important;
+}
+
+#logo {
+    background-image: url('/img/logo.svg');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: contain;
+    display: block;
+}
+
+@media (prefers-color-scheme: dark) {
+    #logo {
+        background-image: url('/img/logo-negativ.svg');
+    }
+}
