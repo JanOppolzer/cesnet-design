@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css?family=Oswald&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css">
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.1/dist/alpine.min.js" defer></script>
 </head>
-<body class="bg-gray-50 dark:bg-warmGray-800 text-gray-900 dark:text-warmGray-50">
+<body class="bg-gray-50 dark:bg-stone-800 text-gray-900 dark:text-stone-50">
 
     <noscript>
         <div class="m-4 p-4 sm:px-8 bg-red-700 dark:bg-red-900 text-red-50 font-bold rounded shadow">
@@ -733,7 +733,7 @@
 
             <div x-data="{ menu: false }">
 
-                <div @click="menu = !menu" class="p-4 flex justify-between md:hidden bg-gray-200 dark:bg-warmGray-600 cursor-pointer">
+                <div @click="menu = !menu" class="p-4 flex justify-between md:hidden bg-gray-200 dark:bg-stone-600 cursor-pointer">
 
                     <span>Menu</span>
 
@@ -750,12 +750,12 @@
                 <div :class="{ 'hidden': !menu }" class="hidden md:block">
     
                     <div class="py-4">
-                        <input class="px-4 py-2 w-full bg-gray-100 dark:bg-warmGray-700" type="text" name="q" accesskey="f" placeholder="Hledat">
+                        <input class="px-4 py-2 w-full bg-gray-100 dark:bg-stone-700" type="text" name="q" accesskey="f" placeholder="Hledat">
                     </div>
     
                     <nav class="text-base">
                         <ul class="border-gray-300 border-2">
-                            <li class="border-gray-300 border-b bg-gradient-to-b from-red-500 dark:from-red-700 to-red-700 dark:to-red-900 hover:from-red-600 hover:to-red-800 text-red-50 dark:text-warmGray-50 uppercase">
+                            <li class="border-gray-300 border-b bg-gradient-to-b from-red-500 dark:from-red-700 to-red-700 dark:to-red-900 hover:from-red-600 hover:to-red-800 text-red-50 dark:text-stone-50 uppercase">
                                 <a class="flex items-center space-x-2 py-1 pl-3 leading-10" href="#">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -765,52 +765,52 @@
                             </li>
                             <li>
                                 <ul>
-                                    <li class="border-gray-300 border-b bg-gray-200 dark:bg-warmGray-700 bg-gradient-to-b hover:from-red-50 dark:hover:from-warmGray-700 hover:to-red-100 dark:hover:to-warmGray-800">
+                                    <li class="border-gray-300 border-b bg-gray-200 dark:bg-stone-700 bg-gradient-to-b hover:from-red-50 dark:hover:from-stone-700 hover:to-red-100 dark:hover:to-stone-800">
                                         <a class="block py-1 pl-10 leading-10" href="#">
                                             Co je federace identit?
                                         </a>
                                     </li>
-                                    <li class="border-gray-300 border-b bg-gray-200 dark:bg-warmGray-700 bg-gradient-to-b hover:from-red-50 dark:hover:from-warmGray-700 hover:to-red-100 dark:hover:to-warmGray-800">
+                                    <li class="border-gray-300 border-b bg-gray-200 dark:bg-stone-700 bg-gradient-to-b hover:from-red-50 dark:hover:from-stone-700 hover:to-red-100 dark:hover:to-stone-800">
                                         <a class="block py-1 pl-10 leading-10" href="#">
                                             Novinky
                                         </a>
                                     </li>
-                                    <li class="border-gray-300 border-b bg-gray-200 dark:bg-warmGray-700 bg-gradient-to-b hover:from-red-50 dark:hover:from-warmGray-700 hover:to-red-100 dark:hover:to-warmGray-800">
+                                    <li class="border-gray-300 border-b bg-gray-200 dark:bg-stone-700 bg-gradient-to-b hover:from-red-50 dark:hover:from-stone-700 hover:to-red-100 dark:hover:to-stone-800">
                                         <a class="block py-1 pl-10 leading-10" href="#">
                                             Členové
                                         </a>
                                     </li>
-                                    <li class="border-gray-300 border-b bg-gray-200 dark:bg-warmGray-700 bg-gradient-to-b hover:from-red-50 dark:hover:from-warmGray-700 hover:to-red-100 dark:hover:to-warmGray-800">
+                                    <li class="border-gray-300 border-b bg-gray-200 dark:bg-stone-700 bg-gradient-to-b hover:from-red-50 dark:hover:from-stone-700 hover:to-red-100 dark:hover:to-stone-800">
                                         <a class="block py-1 pl-10 leading-10" href="#">
                                             Jak se připojit
                                         </a>
                                     </li>
-                                    <li class="border-gray-300 border-b bg-gray-200 dark:bg-warmGray-700 bg-gradient-to-b hover:from-red-50 dark:hover:from-warmGray-700 hover:to-red-100 dark:hover:to-warmGray-800">
+                                    <li class="border-gray-300 border-b bg-gray-200 dark:bg-stone-700 bg-gradient-to-b hover:from-red-50 dark:hover:from-stone-700 hover:to-red-100 dark:hover:to-stone-800">
                                         <a class="block py-1 pl-10 leading-10" href="#">
                                             Pro uživatele
                                         </a>
                                     </li>
-                                    <li class="border-gray-300 border-b bg-gray-200 dark:bg-warmGray-700 bg-gradient-to-b hover:from-red-50 dark:hover:from-warmGray-700 hover:to-red-100 dark:hover:to-warmGray-800">
+                                    <li class="border-gray-300 border-b bg-gray-200 dark:bg-stone-700 bg-gradient-to-b hover:from-red-50 dark:hover:from-stone-700 hover:to-red-100 dark:hover:to-stone-800">
                                         <a class="block py-1 pl-10 leading-10" href="#">
                                             Politika
                                         </a>
                                     </li>
-                                    <li class="border-gray-300 border-b bg-gray-200 dark:bg-warmGray-700 bg-gradient-to-b hover:from-red-50 dark:hover:from-warmGray-700 hover:to-red-100 dark:hover:to-warmGray-800">
+                                    <li class="border-gray-300 border-b bg-gray-200 dark:bg-stone-700 bg-gradient-to-b hover:from-red-50 dark:hover:from-stone-700 hover:to-red-100 dark:hover:to-stone-800">
                                         <a class="block py-1 pl-10 leading-10" href="#">
                                             MRPS
                                         </a>
                                     </li>
-                                    <li class="border-gray-300 border-b bg-gray-200 dark:bg-warmGray-700 bg-gradient-to-b hover:from-red-50 dark:hover:from-warmGray-700 hover:to-red-100 dark:hover:to-warmGray-800">
+                                    <li class="border-gray-300 border-b bg-gray-200 dark:bg-stone-700 bg-gradient-to-b hover:from-red-50 dark:hover:from-stone-700 hover:to-red-100 dark:hover:to-stone-800">
                                         <a class="block py-1 pl-10 leading-10" href="#">
                                             Ochrana osobních údajů
                                         </a>
                                     </li>
-                                    <li class="border-gray-300 border-b bg-gray-200 dark:bg-warmGray-700 bg-gradient-to-b hover:from-red-50 dark:hover:from-warmGray-700 hover:to-red-100 dark:hover:to-warmGray-800">
+                                    <li class="border-gray-300 border-b bg-gray-200 dark:bg-stone-700 bg-gradient-to-b hover:from-red-50 dark:hover:from-stone-700 hover:to-red-100 dark:hover:to-stone-800">
                                         <a class="block py-1 pl-10 leading-10" href="#">
                                             Kontakt
                                         </a>
                                     </li>
-                                    <li class="border-gray-300 border-b bg-gray-200 dark:bg-warmGray-700 bg-gradient-to-b hover:from-red-50 dark:hover:from-warmGray-700 hover:to-red-100 dark:hover:to-warmGray-800">
+                                    <li class="border-gray-300 border-b bg-gray-200 dark:bg-stone-700 bg-gradient-to-b hover:from-red-50 dark:hover:from-stone-700 hover:to-red-100 dark:hover:to-stone-800">
                                         <a class="block py-1 pl-10 leading-10" href="#">
                                             Ke stažení
                                         </a>
@@ -880,8 +880,8 @@
         </a>
     </div>
 
-    <div class="h-3 bg-cesnetGray dark:bg-warmGray-600 clear-both"></div>
-    <footer class="p-8 bg-cesnetDark dark:bg-warmGray-900 text-white dark:text-gray-400 text-sm">
+    <div class="h-3 bg-cesnetGray dark:bg-stone-600 clear-both"></div>
+    <footer class="p-8 bg-cesnetDark dark:bg-stone-900 text-white dark:text-gray-400 text-sm">
 
         <div class="max-w-7xl mx-auto">
 

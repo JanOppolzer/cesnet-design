@@ -1,7 +1,7 @@
 const colors = require('tailwindcss/colors')
 
 module.exports = {
-  purge: [
+  content: [
     './*.html',
   ],
   darkMode: 'media', // or 'media' or 'class'
@@ -16,7 +16,6 @@ module.exports = {
     },
     extend: {
       colors: {
-        warmGray: colors.warmGray,
         cesnetDark: '#4b4d4a',
         cesnetGray: '#dcdcda',
         cesnetRed: '#e60000',
