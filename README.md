@@ -12,3 +12,8 @@ npm install
 npm run build
 npm run serve
 ```
+
+## Preview
+
+You can see the resulting page at [janoppolzer.github.io/cesnet-design](https://janoppolzer.github.io/cesnet-design).
+
