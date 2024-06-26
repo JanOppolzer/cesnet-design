@@ -32,6 +32,8 @@ jobs:
         run: |
           sed -i 's#/css/style.css#css/style.css#' dist/index.html
           sed -i 's#/assets/index#assets/index#' dist/index.html
+          sed -i 's#/img/logo.svg#img/logo.svg#' dist/css/style.css
+          sed -i 's#/img/logo-negativ.svg#img/logo-negativ.svg#' dist/css/style.css
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
