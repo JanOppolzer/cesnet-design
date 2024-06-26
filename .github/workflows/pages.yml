@@ -28,6 +28,10 @@ jobs:
         run: npm install
       - name: Build assets
         run: npm run build
+      - name: Fix CSS directories
+        run: |
+          sed -i 's#/css/style.css#css/style.css#' index.html
+          sed -i 's#/assets/index#assets/index#' index.html
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
